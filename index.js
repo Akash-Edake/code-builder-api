@@ -41,15 +41,14 @@ app.post("/user/theme", async (req, res) => {
   const { id, theme } = req.body;
 
   try {
-    const user = await User.findOne({ _id: id });
-    if (theme === "light" || theme === "dark") {
-      let updateTheme = await User.findOneAndUpdate(
-        { _id: id },
-        { $set: { theme } }
-      );
-      res.status(201).send({ theme });
+    if (!theme) {
+      const user = await User.findOne({ _id: id });
+      res.status(200).send({ theme: user.theme });
+      return;
     }
-    res.status(200).send({ theme: user.theme });
+
+    await User.findOneAndUpdate({ _id: id }, { $set: { theme } });
+    res.status(201).send({ theme });
   } catch (e) {
     res.status(400).send(e);
   }
