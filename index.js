@@ -39,10 +39,17 @@ app.post("/user/login", async (req, res) => {
 
 app.post("/user/theme", async (req, res) => {
   const { id, theme } = req.body;
+
   try {
-    let updateTheme = await User.findOneAndUpdate({ _id: id }, { $set: { theme } });
-    console.log(updateTheme)
-    res.status(201).send({theme});
+    const user = await User.findOne({ _id: id });
+    if (theme === "light" || theme === "dark") {
+      let updateTheme = await User.findOneAndUpdate(
+        { _id: id },
+        { $set: { theme } }
+      );
+      res.status(201).send({ theme });
+    }
+    res.status(200).send({ theme: user.theme });
   } catch (e) {
     res.status(400).send(e);
   }
