@@ -38,6 +38,35 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: new Date(),
   },
+  birthDate: {
+    month: {
+      type: Number,
+      required: true,
+      validate(value) {
+        if (value < 1 || value > 12) {
+          throw new Error("need valied month");
+        }
+      },
+    },
+    day: {
+      type: Number,
+      required: true,
+      validate(value) {
+        if (value < 1 || value > 31) {
+          throw new Error("need valied day");
+        }
+      },
+    },
+    year: {
+      type: Number,
+      required: true,
+      validate(value) {
+        if (value < 1970 || value > 2021) {
+          throw new Error("need valied year");
+        }
+      },
+    },
+  },
 });
 
 userSchema.pre("save", async function (next) {
