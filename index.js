@@ -2,7 +2,6 @@ require("./src/db/mongoose");
 const express = require("express");
 const cors = require("cors");
 const User = require("./src/model/user");
-const FakeJson = require("./src/model/fakeJson");
 
 const port = process.env.PORT || 8089;
 
@@ -19,15 +18,7 @@ app.get("/getusers", async (req, res) => {
     return res.status(400).send(err);
   }
 });
-app.get("/", async (req, res) => {
-  const data = await FakeJson.find({title:"error quasi sunt cupiditate voluptate ea odit beatae"});
-  try{
-    return res.status(200).send(data);
-  }catch(err){
-    return res.status(400).send(err);
-  }
-  
-});
+
 app.post("/user/singup", async (req, res) => {
   const user = new User(req.body);
   try {
