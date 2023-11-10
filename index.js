@@ -7,7 +7,7 @@ const port = process.env.PORT || 8089;
 
 const app = express();
 app.use(express.json());
-app.use(cors())
+app.use(cors());
 app.listen(port, () => console.log("local connected"));
 
 app.get("/getusers", async (req, res) => {
@@ -49,8 +49,18 @@ app.post("/user/theme", async (req, res) => {
       return;
     }
 
-    await User.findOneAndUpdate({ _id: id }, { $set: { theme } });
     res.status(201).send({ theme });
+    await User.findOneAndUpdate({ _id: id }, { $set: { theme } });
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+app.post("/user/profilePic", async (req, res) => {
+  const { id, profilePic } = req.body;
+  try {
+    res.status(201).send({ profilePic });
+    await User.updateOne({ _id: id }, { $set: { profilePic } });
   } catch (e) {
     res.status(400).send(e);
   }
