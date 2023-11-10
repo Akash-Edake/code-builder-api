@@ -59,6 +59,11 @@ app.post("/user/theme", async (req, res) => {
 app.post("/user/profilePic", async (req, res) => {
   const { id, profilePic } = req.body;
   try {
+    if (!profilePic) {
+      const user = await User.findOne({ _id: id });
+      res.status(200).send({ profilePic: user.profilePic });
+      return;
+    }
     res.status(201).send({ profilePic });
     await User.updateOne({ _id: id }, { $set: { profilePic } });
   } catch (e) {
