@@ -78,6 +78,10 @@ const userSchema = new mongoose.Schema({
       },
     },
   },
+  masterControl: {
+    type: Boolean,
+    default: false,
+  },
   tokens: [
     {
       token: {
