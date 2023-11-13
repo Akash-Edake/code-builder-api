@@ -82,7 +82,7 @@ const userSchema = new mongoose.Schema({
     {
       token: {
         type: String,
-        require: true,
+        // require: true,
       },
     },
   ],
