@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -33,6 +34,16 @@ const userSchema = new mongoose.Schema({
   theme: {
     type: String,
     default: "light",
+  },
+  snippetsTheme: {
+    light: {
+      type: String,
+      default: "a11yLight",
+    },
+    dark: {
+      type: String,
+      default: "dracula",
+    },
   },
   accontCreated: {
     type: String,
@@ -67,6 +78,14 @@ const userSchema = new mongoose.Schema({
       },
     },
   },
+  tokens: [
+    {
+      token: {
+        type: String,
+        require: true,
+      },
+    },
+  ],
 });
 
 userSchema.pre("save", async function (next) {
@@ -86,6 +105,13 @@ userSchema.statics.findByCredentials = async (email, password) => {
     throw new Error("password is wrong");
   }
   return user;
+};
+
+userSchema.methods.generateJwtToken = function () {
+  let token = jwt.sign({ _id: this._id.toString() }, "solt code");
+  this.tokens = this.tokens.concat({ token });
+  this.save();
+  return token;
 };
 const User = mongoose.model("User", userSchema);
 module.exports = User;
