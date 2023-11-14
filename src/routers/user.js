@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../model/user");
+const auth = require("../middleware/auth")
 
 const router = express.Router();
 
@@ -11,6 +12,20 @@ router.get("/getusers", async (req, res) => {
     return res.status(400).send(err);
   }
 });
+
+router.post("/user/auth",auth,(req,res)=>{
+ res.status(200).send(req.user)
+})
+
+router.post("/user/logout",auth,(req,res)=>{
+ try{
+  req.user.tokens=[]
+  req.user.save()
+  res.status(200).send("log out successfully")
+ }catch(e){
+
+ }
+ })
 
 router.post("/user/singup", async (req, res) => {
   const user = new User(req.body);
