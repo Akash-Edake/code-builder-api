@@ -29,6 +29,7 @@ router.post("/user/login", async (req, res) => {
     let userLogin = await User.findByCredentials(email, password);
     const token = userLogin.generateJwtToken();
     res.send({ userLogin, token });
+    userLogin.visiting = userLogin.visiting.concat(new Date());
   } catch (error) {
     return res.status(401).send(error);
   }
@@ -54,8 +55,8 @@ router.post("/user/theme", async (req, res) => {
 router.post("/user/snippetsTheme", async (req, res) => {
   const { id, theme, snippetsTheme } = req.body;
   try {
-   let data1= await User.updateMany({}, { $set: { "masterControl": true } });
-   console.log(data1.modifiedCount)
+    let data1 = await User.updateMany({}, { $set: { masterControl: true } });
+    console.log(data1.modifiedCount);
     if (!theme || !snippetsTheme) {
       const user = await User.findOne({ _id: id });
       res.status(200).send({ theme: user.snippetsTheme });
@@ -68,9 +69,8 @@ router.post("/user/snippetsTheme", async (req, res) => {
     const updateQuery = { $set: { [`snippetsTheme.${theme}`]: snippetsTheme } };
     await User.findOneAndUpdate({ _id: id }, updateQuery);
 
-    //! object injection 
+    //! object injection
     // await User.updateMany({}, { $set: { snippetsTheme: {light:"a11yLight",dark:"dracula"} } });
-   
   } catch (e) {
     res.status(400).send(e);
   }

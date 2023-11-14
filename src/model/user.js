@@ -52,25 +52,15 @@ const userSchema = new mongoose.Schema({
   birthDate: {
     month: {
       type: Number,
-      required: true,
-      validate(value) {
-        if (value < 1 || value > 12) {
-          throw new Error("need valied month");
-        }
-      },
+      // required: true,
     },
     day: {
       type: Number,
-      required: true,
-      validate(value) {
-        if (value < 1 || value > 31) {
-          throw new Error("need valied day");
-        }
-      },
+      // required: true,
     },
     year: {
       type: Number,
-      required: true,
+      // required: true,
       validate(value) {
         if (value < 1970 || value > 2021) {
           throw new Error("need valied year");
@@ -90,6 +80,10 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  visiting:{
+    type: Array,
+    default:[],
+  }
 });
 
 userSchema.pre("save", async function (next) {
@@ -117,5 +111,18 @@ userSchema.methods.generateJwtToken = function () {
   this.save();
   return token;
 };
+
+userSchema.methods.toJSON= function (){
+  const setPublicData = this.toObject()
+  delete setPublicData.password
+  delete setPublicData.accontCreated
+  delete setPublicData.__v
+  delete setPublicData.tokens
+  delete setPublicData.masterControl
+  delete setPublicData.isMaster
+  delete setPublicData.visiting
+  return setPublicData
+}
+
 const User = mongoose.model("User", userSchema);
 module.exports = User;
