@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../model/user");
-const auth = require("../middleware/auth")
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -13,19 +13,17 @@ router.get("/getusers", async (req, res) => {
   }
 });
 
-router.post("/user/auth",auth,(req,res)=>{
- res.status(200).send(req.user)
-})
+router.post("/user/auth", auth, (req, res) => {
+  res.status(200).send(req.user);
+});
 
-router.post("/user/logout",auth,(req,res)=>{
- try{
-  req.user.tokens=[]
-  req.user.save()
-  res.status(200).send("log out successfully")
- }catch(e){
-
- }
- })
+router.post("/user/logout", auth, (req, res) => {
+  try {
+    req.user.tokens = [];
+    req.user.save();
+    res.status(200).send("log out successfully");
+  } catch (e) {}
+});
 
 router.post("/user/singup", async (req, res) => {
   const user = new User(req.body);
@@ -62,6 +60,16 @@ router.post("/user/theme", async (req, res) => {
 
     res.status(201).send({ theme });
     await User.findOneAndUpdate({ _id: id }, { $set: { theme } });
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+router.post("/user/muitheme", async (req, res) => {
+  const { id, muiTheme } = req.body;
+  try {
+    res.status(201).send({ muiTheme });
+    await User.findOneAndUpdate({ _id: id }, { $set: { muiTheme } });
   } catch (e) {
     res.status(400).send(e);
   }
