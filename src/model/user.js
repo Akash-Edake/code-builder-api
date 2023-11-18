@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
+    trim: true,
     lowercase: true,
     required: [true, "Please provide your name"],
     minlength: [3, "Name should be at least 3 characters long"],
@@ -23,13 +24,14 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+    trim: true,
     required: [true, "Password is required"],
     minlength: [8, "Password must be minimum of 8 characters"],
     select: true, // To hide the password field while fetching data from db
   },
   profilePic: {
     type: String,
-    default: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png ",
+    default: "https://cdn-icons-png.flaticon.com/512/9131/9131529.png",
   },
   theme: {
     type: String,
@@ -129,6 +131,8 @@ const userSchema = new mongoose.Schema({
       },
     },
   }
+},{
+  timestamps:true
 });
 
 userSchema.pre("save", async function (next) {
