@@ -6,11 +6,6 @@ const morgan = require("morgan");
 const userRouter = require("./src/routers/user");
 const codeRouter = require("./src/routers/code");
 
-const app = express();
-app.use(express.json());
-app.use(morgan("dev"));
-app.use(cors());
-
 const numCPUs = require("node:os").availableParallelism();
 
 if (cluster.isPrimary) {
@@ -27,12 +22,13 @@ if (cluster.isPrimary) {
 } else {
   const port = process.env.PORT || 8080;
 
-
-
   // app.use((req,res,next)=>{
   //     res.status(503).send("server under maintenance")
   // })
-
+  const app = express();
+  app.use(express.json());
+  app.use(morgan("dev"));
+  app.use(cors());
   app.use(userRouter);
   app.use(codeRouter);
 
