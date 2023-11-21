@@ -1,21 +1,41 @@
 require("./src/db/mongoose");
+const cluster = require("node:cluster");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const userRouter = require("./src/routers/user");
 const codeRouter = require("./src/routers/code");
 
+const numCPUs = require("node:os").availableParallelism();
 
-const port = process.env.PORT
+if (cluster.isPrimary) {
+  console.log(`Primary ${process.pid} is running`);
 
-const app = express();
+  // Fork workers.
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
 
-// app.use((req,res,next)=>{
-//     res.status(503).send("server under maintenance")
-// })
-app.use(express.json());
-app.use(morgan('dev'))
-app.use(cors());
-app.use(userRouter);
-app.use(codeRouter);
-app.listen(port, () => console.log("local connected"));
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+  });
+} else {
+  const port = process.env.PORT || 8080;
+
+  const app = express();
+
+  // app.use((req,res,next)=>{
+  //     res.status(503).send("server under maintenance")
+  // })
+  app.use(express.json());
+  app.use(morgan("dev"));
+  app.use(cors());
+  app.use(userRouter);
+  app.use(codeRouter);
+
+  app.get("/load_balancing", (req, res) => {
+    res.send({ msg: `Load Balancer Port No. ${process.pid}` });
+  });
+
+  app.listen(port, () => console.log("local connected"));
+}
