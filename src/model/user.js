@@ -82,6 +82,9 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  locations: {
+    type: Object
+  },
   visiting:{
     type: Array,
     default:[],
@@ -160,6 +163,8 @@ userSchema.methods.generateJwtToken = function () {
   this.save();
   return token;
 };
+
+
 
 userSchema.methods.toJSON= function (){
   const setPublicData = this.toObject()

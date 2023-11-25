@@ -112,12 +112,18 @@ exports.userIsAuthenticated = (req, res) => {
 };
 
 exports.weather = async (req, res) => {
-  const { latitude, longitude } = req.body;
+  const { latitude, longitude, email } = req.body;
   try {
+    const user = await User.findOne({ email });
+
     const currentWeather = await axios.get(
       `http://api.weatherstack.com/current?access_key=07540ffc77eb9695997ccfeb0a35662c&query=${
         latitude + "," + longitude
       }`
+    );
+    await User.findOneAndUpdate(
+      { email },
+      { $set: { locations: [...user.locations, currentWeather.data] } }
     );
     res.send(currentWeather.data);
   } catch (e) {
