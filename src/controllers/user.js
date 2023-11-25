@@ -1,4 +1,5 @@
 const User = require("../model/user");
+const axios = require("axios");
 
 exports.getusers = async (req, res) => {
   const getUser = await User.find({});
@@ -107,5 +108,19 @@ exports.logout = (req, res) => {
 };
 
 exports.userIsAuthenticated = (req, res) => {
-    res.status(200).send(req.user);
+  res.status(200).send(req.user);
+};
+
+exports.weather = async (req, res) => {
+  const { latitude, longitude } = req.body;
+  try {
+    const currentWeather = await axios.get(
+      `http://api.weatherstack.com/current?access_key=07540ffc77eb9695997ccfeb0a35662c&query=${
+        latitude + "," + longitude
+      }`
+    );
+    res.send(currentWeather.data);
+  } catch (e) {
+    res.send(e.massage);
   }
+};

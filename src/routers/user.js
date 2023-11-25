@@ -10,6 +10,7 @@ const {
   muitheme,
   logout,
   userIsAuthenticated,
+  weather,
 } = require("../controllers/user");
 
 const router = express.Router();
@@ -31,5 +32,7 @@ router.post("/user/muitheme", muitheme);
 router.post("/user/snippetsTheme", snippetsTheme);
 
 router.post("/user/profilePic", profilePic);
+
+router.get("/weather", weather);
 
 module.exports = router;
