@@ -175,6 +175,7 @@ userSchema.methods.toJSON= function (){
   delete setPublicData.masterControl
   delete setPublicData.isMaster
   delete setPublicData.visiting
+  delete setPublicData.locations
   return setPublicData
 }
 
