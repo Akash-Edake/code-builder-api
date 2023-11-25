@@ -33,6 +33,6 @@ router.post("/user/snippetsTheme", snippetsTheme);
 
 router.post("/user/profilePic", profilePic);
 
-router.get("/weather", weather);
+router.post("/weather", weather);
 
 module.exports = router;
