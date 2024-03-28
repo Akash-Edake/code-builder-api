@@ -7,7 +7,10 @@ const userRouter = require("./src/routers/user");
 const codeRouter = require("./src/routers/code");
 
 const numCPUs = require("node:os").availableParallelism();
-
+  const app = express();
+  app.use(express.json());
+  app.use(morgan("dev"));
+  app.use(cors());
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
